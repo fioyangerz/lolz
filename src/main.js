@@ -7,6 +7,7 @@ import { startPractice } from './modes/practice.js';
 import { startShowtime } from './modes/showtime.js';
 import { errorLine } from './voice.js';
 import { FPS } from './scoring.js';
+import { initPip } from './pip.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -72,6 +73,7 @@ async function loadReferenceVideo(url) {
   const v = $('refVideo');
   if (v.videoWidth && v.videoHeight) {
     $('pip').style.setProperty('--ref-aspect', `${v.videoWidth} / ${v.videoHeight}`);
+    pipCtl?.apply(); // new shape -> re-clamp position
   }
 }
 
@@ -254,8 +256,14 @@ $('fullscreenBtn').addEventListener('click', () => {
   else $('stage').requestFullscreen?.().catch(() => {});
 });
 
-// Tap the reference tile to make it bigger / smaller.
-$('pip').addEventListener('click', () => $('pip').classList.toggle('big'));
+// Reference tile: drag anywhere, size + see-through sliders (panel and dance bar stay in sync).
+const pipCtl = initPip({
+  pip: $('pip'),
+  area: document.querySelector('.porthole.cam'),
+  scaleInputs: [$('pipScale'), $('barPipScale')],
+  opacityInputs: [$('pipOpacity'), $('barPipOpacity')],
+  resetButton: $('pipReset'),
+});
 $('mirrorView').addEventListener('change', (e) => $('stage').classList.toggle('mirrored', e.target.checked));
 
 boot().catch((e) => {

@@ -263,25 +263,33 @@ select {
 /* reference tile, picture-in-picture at the top */
 .pip {
   --ref-aspect: 16 / 9;
-  --pip-w: clamp(140px, 22%, 300px);
+  --pip-scale: 1;
+  --pip-base: clamp(140px, 22%, 300px);
   position: absolute;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: var(--pip-w);
+  /* main.js sets left/top from the saved position; this is the pre-JS fallback */
+  top: 12px;
+  left: calc(50% - var(--pip-scale) * var(--pip-base) / 2);
+  width: calc(var(--pip-scale) * var(--pip-base));
+  max-width: calc(100% - 24px);
+  max-height: 80%;
   aspect-ratio: var(--ref-aspect);
-  max-height: 45%;
   padding: 0;
   border: 4px solid #fff;
   border-radius: 20px;
   overflow: hidden;
-  cursor: zoom-in;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
   background: radial-gradient(circle at 50% 40%, #2a7cc0, var(--deep));
   box-shadow: 0 0 18px 3px var(--glow), 0 0 40px rgba(143, 208, 255, 0.6), 0 8px 24px rgba(6, 41, 75, 0.5);
-  transition: width 0.25s ease;
+  transition: opacity 0.15s ease;
   z-index: 2;
 }
-.pip.big { --pip-w: clamp(220px, 38%, 520px); max-height: 65%; cursor: zoom-out; }
+.pip.dragging {
+  cursor: grabbing;
+  box-shadow: 0 0 0 3px #fff, 0 0 30px 8px var(--glow), 0 14px 30px rgba(6, 41, 75, 0.55);
+}
+.pip video { pointer-events: none; }
 .pip video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 .pip:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 .pip .empty { font-size: 0.85rem; }
@@ -307,6 +315,11 @@ select {
 .dance-bar .btn { padding: 8px 18px; }
 .field.inline { flex-direction: row; align-items: center; gap: 6px; }
 .field.inline select { padding: 6px 10px; }
+.field.slim span { font-size: 0.75rem; }
+.field.slim input[type='range'] { width: 90px; }
+input[type='range'] { accent-color: var(--chrome-blue); cursor: pointer; }
+.field input[type='range'] { width: 170px; }
+.hint-inline { font-size: 0.85rem; font-weight: 600; opacity: 0.75; }
 
 /* focus mode: you take over the screen */
 body.dancing { overflow: hidden; }
@@ -446,8 +459,9 @@ body.dancing .toast { top: auto; bottom: 96px; }
 
 @media (max-width: 720px) {
   .porthole { height: 70vh; border-radius: 24px; }
-  .pip { --pip-w: 30%; min-width: 110px; }
-  .pip.big { --pip-w: 55%; }
+  .pip { --pip-base: max(110px, 30%); }
+  .dance-bar { flex-wrap: wrap; justify-content: center; border-radius: 22px; width: calc(100% - 24px); }
+  .field.slim input[type='range'] { width: 70px; }
   .modes .btn { flex: 1 1 140px; }
   .toast { border-radius: 20px; }
 }

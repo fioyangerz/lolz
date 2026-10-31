@@ -23,10 +23,15 @@ via `.github/workflows/pages.yml`).
    moves from it and uses **its audio as your music**, so you don't need to re-record anything.
    The reference is saved on your device (IndexedDB), so it's there next time.
 2. **Practice.** The song loops, a ghost skeleton dances inside your outline, and about every
-   10 seconds of music you get one tip (spoken out loud if you like). Slow it down to 0.75× or
-   0.5× without the pitch changing.
+   10 seconds of music you get one tip on screen (turn on "say tips out loud" to hear them).
+   Slow it down to 0.75× or 0.5× without the pitch changing.
 3. **Showtime ✨.** After a 3-2-1 countdown you dance 1 or 2 reps at full speed, then you get a
    score, a few tips, a rushing/dragging meter, and a per-second timeline.
+
+While you dance, your camera fills the screen and the reference plays in a small tile, like a
+video call. **Drag the tile anywhere** (it snaps to edges and corners), use the **ref size** and
+**see-through** sliders to resize it or fade it, and **double-click** it to put it back
+top-center. Your setup is remembered in this browser.
 
 ## How it works
 
