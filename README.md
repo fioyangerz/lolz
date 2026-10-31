@@ -9,10 +9,13 @@ entirely in your browser: pose tracking happens on your laptop, so your video ne
 npm install
 npm run dev      # open the printed http://localhost:5173
 npm test         # scoring + voice unit tests
-npm run build    # static site in dist/ (deployable to GitHub Pages, Netlify, ...)
+npm run build    # static site in dist/
 ```
 
 The camera needs `localhost` or `https`.
+
+**Live site:** https://fioyangerz.github.io/lolz/ (every push to the default branch redeploys it
+via `.github/workflows/pages.yml`).
 
 ## How to use
 
