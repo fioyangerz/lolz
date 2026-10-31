@@ -47,17 +47,31 @@
       </section>
 
       <section class="stage mirrored" id="stage">
-        <div class="porthole ref">
-          <video id="refVideo" playsinline></video>
-          <span class="label">reference</span>
-          <div class="empty" id="refEmpty">no reference yet 📼</div>
-        </div>
         <div class="porthole cam">
           <video id="cam" playsinline muted></video>
           <canvas id="overlay"></canvas>
           <span class="label">you</span>
           <div class="empty" id="camEmpty">camera turns on when you hit play 📷</div>
           <div class="countdown chrome" id="countdown" hidden></div>
+
+          <button class="pip" id="pip" type="button" title="tap to resize the reference">
+            <video id="refVideo" playsinline></video>
+            <span class="label small">reference</span>
+            <span class="empty" id="refEmpty">no reference yet 📼</span>
+          </button>
+
+          <div class="dance-bar" id="danceBar">
+            <button id="barStop" class="btn quiet" type="button">stop</button>
+            <label class="field inline" id="barSpeedWrap">
+              <span>speed</span>
+              <select id="barSpeed">
+                <option value="1">1×</option>
+                <option value="0.75">0.75×</option>
+                <option value="0.5">0.5×</option>
+              </select>
+            </label>
+            <button id="fullscreenBtn" class="btn quiet" type="button" title="fullscreen">⛶</button>
+          </div>
         </div>
       </section>
 

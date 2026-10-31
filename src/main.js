@@ -61,6 +61,18 @@ function setRunning(mode) {
   $('showtimeBtn').classList.toggle('active', mode === 'showtime');
   $('stopBtn').disabled = !mode;
   $('refInput').disabled = !!mode;
+  // Focus mode: while dancing, the camera stage takes over the screen.
+  document.body.classList.toggle('dancing', !!mode);
+  $('barSpeedWrap').hidden = mode !== 'practice';
+  if (!mode && document.fullscreenElement) document.exitFullscreen().catch(() => {});
+}
+
+async function loadReferenceVideo(url) {
+  await player.load(url);
+  const v = $('refVideo');
+  if (v.videoWidth && v.videoHeight) {
+    $('pip').style.setProperty('--ref-aspect', `${v.videoWidth} / ${v.videoHeight}`);
+  }
 }
 
 function updateReady() {
@@ -77,7 +89,7 @@ async function boot() {
   const { dance: d, video } = await loadDance('dougie');
   dance = d;
   if (video && d.referenceFrames.length) {
-    await player.load(URL.createObjectURL(video));
+    await loadReferenceVideo(URL.createObjectURL(video));
   } else {
     refStatus('no reference yet, drop a Dougie video to start ✨');
   }
@@ -113,7 +125,7 @@ async function handleReference(file) {
       source: file.name,
     };
     await saveDance(dance, file);
-    await player.load(URL.createObjectURL(file));
+    await loadReferenceVideo(URL.createObjectURL(file));
     player.setRate(settings.speed());
     if (res.detectedRatio < 0.6) {
       ui.toast('heads up: I lost the dancer in parts of that video, feedback might be a lil off');
@@ -209,20 +221,41 @@ function renderResults(result, rep) {
       return seg;
     }),
   );
-  $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Wait for focus mode to exit (it locks page scrolling) before scrolling to the grade.
+  setTimeout(() => $('results').scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
 }
 
 // ---- wire up ----
 $('refInput').addEventListener('change', (e) => handleReference(e.target.files?.[0]));
 $('practiceBtn').addEventListener('click', () => run('practice'));
 $('showtimeBtn').addEventListener('click', () => run('showtime'));
-$('stopBtn').addEventListener('click', () => {
+function stopByUser() {
+  if (!document.body.classList.contains('dancing')) return;
   stopCurrent();
   ui.status('paused. hydrate 💧');
+}
+$('stopBtn').addEventListener('click', stopByUser);
+$('barStop').addEventListener('click', stopByUser);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') stopByUser();
 });
-$('speed').addEventListener('change', () => {
-  if (!$('showtimeBtn').classList.contains('active')) player.setRate(settings.speed());
+
+// One speed setting, shown in the panel and in the in-stage bar.
+function setSpeed(value) {
+  $('speed').value = value;
+  $('barSpeed').value = value;
+  if (!$('showtimeBtn').classList.contains('active')) player.setRate(Number(value));
+}
+$('speed').addEventListener('change', (e) => setSpeed(e.target.value));
+$('barSpeed').addEventListener('change', (e) => setSpeed(e.target.value));
+
+$('fullscreenBtn').addEventListener('click', () => {
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  else $('stage').requestFullscreen?.().catch(() => {});
 });
+
+// Tap the reference tile to make it bigger / smaller.
+$('pip').addEventListener('click', () => $('pip').classList.toggle('big'));
 $('mirrorView').addEventListener('change', (e) => $('stage').classList.toggle('mirrored', e.target.checked));
 
 boot().catch((e) => {
