@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dougie coach</title>
+    <meta name="description" content="Rate your Dougie with computer vision. Runs entirely in your browser." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Audiowide&family=Exo+2:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="tunnel" aria-hidden="true">
+      <div class="pipes left"></div>
+      <div class="pipes right"></div>
+      <div class="ring r4"></div>
+      <div class="ring r3"></div>
+      <div class="ring r2"></div>
+      <div class="ring r1"></div>
+      <div class="core"></div>
+      <div class="floor"></div>
+    </div>
+
+    <header class="hero">
+      <h1 class="chrome title">dougie coach</h1>
+      <p class="tag">your biggest fan, but make it computer vision</p>
+    </header>
+
+    <main>
+      <section class="panel" id="refPanel">
+        <h2><span class="num">1</span> drop the reference</h2>
+        <p class="hint">
+          Upload a video of a solid Dougie, with the song. I learn the moves from it <em>and</em> play its audio
+          back for you, so there's nothing to re-record. Everything stays on your laptop.
+        </p>
+        <div class="row">
+          <label class="btn file">
+            choose video
+            <input type="file" accept="video/*" id="refInput" hidden />
+          </label>
+          <p id="refStatus" class="status"></p>
+        </div>
+        <div class="progress" id="progress" hidden><div class="bar" id="progressBar"></div></div>
+      </section>
+
+      <section class="stage mirrored" id="stage">
+        <div class="porthole ref">
+          <video id="refVideo" playsinline></video>
+          <span class="label">reference</span>
+          <div class="empty" id="refEmpty">no reference yet 📼</div>
+        </div>
+        <div class="porthole cam">
+          <video id="cam" playsinline muted></video>
+          <canvas id="overlay"></canvas>
+          <span class="label">you</span>
+          <div class="empty" id="camEmpty">camera turns on when you hit play 📷</div>
+          <div class="countdown chrome" id="countdown" hidden></div>
+        </div>
+      </section>
+
+      <section class="panel controls">
+        <h2><span class="num">2</span> pick your vibe</h2>
+        <div class="row modes">
+          <button id="practiceBtn" class="btn">
+            practice
+            <small>loop it, get the odd tip</small>
+          </button>
+          <button id="showtimeBtn" class="btn hot">
+            showtime ✨
+            <small>1–2 reps, then you're graded</small>
+          </button>
+          <button id="stopBtn" class="btn quiet" disabled>stop</button>
+        </div>
+        <div class="row settings">
+          <label class="field">
+            <span>practice speed</span>
+            <select id="speed">
+              <option value="1">1×</option>
+              <option value="0.75">0.75×</option>
+              <option value="0.5">0.5× slow-mo</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>showtime reps</span>
+            <select id="reps">
+              <option value="1">1</option>
+              <option value="2">2</option>
+            </select>
+          </label>
+          <label class="toggle"><input type="checkbox" id="ghost" checked /> ghost dancer</label>
+          <label class="toggle"><input type="checkbox" id="voice" checked /> say tips out loud</label>
+          <label class="toggle"><input type="checkbox" id="mirrorView" checked /> mirror view</label>
+        </div>
+        <p id="modeStatus" class="status" aria-live="polite"></p>
+      </section>
+
+      <section class="panel results" id="results" hidden>
+        <div class="score-wrap">
+          <div class="score chrome" id="score">--</div>
+          <div class="stats" id="stats"></div>
+        </div>
+        <p class="headline" id="headline"></p>
+        <ul class="tips" id="tips"></ul>
+        <div class="meter" id="meter">
+          <span>dragging</span>
+          <div class="track"><div class="center"></div><div class="needle" id="needle"></div></div>
+          <span>rushing</span>
+        </div>
+        <div class="timeline-wrap">
+          <div class="timeline" id="timeline"></div>
+          <div class="legend">
+            <span class="sw good"></span>on it <span class="sw rushing"></span>rushing
+            <span class="sw dragging"></span>dragging <span class="sw off"></span>form off
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
